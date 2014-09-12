@@ -17,7 +17,7 @@ public class BeanMethodsCollector{
 	
 	
 	private Path path = null;
-    private BeanVisitor visitor = null;  
+    private MyFileVisitor visitor = null;  
     private int cutLength;
     
     private ArrayList<String> packageNameList = new ArrayList<String>();
@@ -25,7 +25,7 @@ public class BeanMethodsCollector{
     
     public BeanMethodsCollector(String regex, String path) throws Exception {
     	this.path = Paths.get(path);    
-    	this.visitor = new BeanVisitor(regex);
+    	this.visitor = new MyFileVisitor(regex);
     	this.cutLength = path.length();
     	Files.walkFileTree(this.path, visitor);
     	setPackageNameList();
@@ -35,7 +35,7 @@ public class BeanMethodsCollector{
     private void setPackageNameList(){
     	try {
 			
-			for (Path file : visitor.getList()) { 
+			for (Path file : visitor.getFileList()) { 
 				String str = file.toRealPath(LinkOption.NOFOLLOW_LINKS).toString();
 				//ȥͷȥβ
 				packageNameList.add(str.substring(cutLength,str.length()-5).replace('\\', '.'));

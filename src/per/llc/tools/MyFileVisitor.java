@@ -9,11 +9,11 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 
-public class BeanVisitor extends SimpleFileVisitor<Path>{
+public class MyFileVisitor extends SimpleFileVisitor<Path>{
 	private ArrayList<Path> list = new ArrayList<Path>(); 
 	 
 	private PathMatcher matcher = null;
-	public BeanVisitor(String pattern){
+	public MyFileVisitor(String pattern){
 		super();
 		matcher = FileSystems.getDefault().getPathMatcher("regex:" + pattern);
 	}
@@ -27,7 +27,7 @@ public class BeanVisitor extends SimpleFileVisitor<Path>{
         }    
         return FileVisitResult.CONTINUE;    
     }  
-    public ArrayList<Path> getList() {    
+    public ArrayList<Path> getFileList() {    
         return list;    
     }    
 }
