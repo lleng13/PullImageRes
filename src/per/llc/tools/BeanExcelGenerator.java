@@ -17,6 +17,7 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 
@@ -27,15 +28,20 @@ public class BeanExcelGenerator {
 	private Map<String, Method[]> map;
 	private FileOutputStream out;
 	private int rowIndex = 0;
-	private Font fontBold;
 	private CellStyle styleFontBold;
-	
+	private CellStyle styleFontColName;
+
+
 
 	public BeanExcelGenerator(String path, Map<String, Method[]> map) {
 		this.path = Paths.get(path);
 		this.map = map;
 		this.workBook = new HSSFWorkbook();
+		initStyles();
+	}
+	public void initStyles() {
 		setStyleFontBold();
+		setStyleFontColName();
 	}
 
 	public HSSFWorkbook getWorkBook() {
@@ -55,14 +61,26 @@ public class BeanExcelGenerator {
 		this.out = out;
 	}
 	
+	public CellStyle getStyleFontColName() {
+		return styleFontColName;
+	}
+
+	public void setStyleFontColName() {
+		CellStyle style = getWorkBook().createCellStyle();
+		Font font = getWorkBook().createFont();
+		font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		font.setFontHeightInPoints((short)15);
+		font.setColor(HSSFColor.BLUE.index);
+		style.setFont(font);
+		this.styleFontColName = style;
+	}
 
 
-
-	public CellStyle getStyleFontBold() {
+	private CellStyle getStyleFontBold() {
 		return styleFontBold;
 	}
 
-	public void setStyleFontBold() {
+	private void setStyleFontBold() {
 		CellStyle style = getWorkBook().createCellStyle();
 		Font font = getWorkBook().createFont();
 		font.setBoldweight(Font.BOLDWEIGHT_BOLD);
@@ -70,7 +88,8 @@ public class BeanExcelGenerator {
 		style.setFont(font);
 		this.styleFontBold = style;
 	}
-
+	
+	
 	private Path getPath() {
 		return this.path;
 	}
@@ -109,7 +128,8 @@ public class BeanExcelGenerator {
 		}
 
 	}
-
+	
+	//TO-DO
 	private void writePresentExcel() {
 
 	}
@@ -121,7 +141,9 @@ public class BeanExcelGenerator {
 		HSSFSheet sheet = getWorkBook().createSheet(file.getName());
 		HSSFRow topRow = sheet.createRow(top);
 		for(int i= 0 ; i < colNames.length ; i++) {
-			topRow.createCell(i).setCellValue(colNames[i]);
+			HSSFCell cell = topRow.createCell(i);
+			cell.setCellStyle(getStyleFontColName());
+			cell.setCellValue(colNames[i]);
 		}
 	}
 	private void rowIndexIncrease() {
