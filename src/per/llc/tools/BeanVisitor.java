@@ -10,7 +10,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 
 public class BeanVisitor extends SimpleFileVisitor<Path>{
-	private ArrayList<Path> list = new ArrayList<>(); 
+	private ArrayList<Path> list = new ArrayList<Path>(); 
 	 
 	private PathMatcher matcher = null;
 	public BeanVisitor(String pattern){

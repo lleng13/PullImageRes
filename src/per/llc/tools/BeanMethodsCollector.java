@@ -20,8 +20,8 @@ public class BeanMethodsCollector{
     private BeanVisitor visitor = null;  
     private int cutLength;
     
-    private ArrayList<String> packageNameList = new ArrayList<>();
-    private Map<String,Method[]> beanMethodsMap = new HashMap<>();
+    private ArrayList<String> packageNameList = new ArrayList<String>();
+    private Map<String,Method[]> beanMethodsMap = new HashMap<String, Method[]>();
     
     public BeanMethodsCollector(String regex, String path) throws Exception {
     	this.path = Paths.get(path);    

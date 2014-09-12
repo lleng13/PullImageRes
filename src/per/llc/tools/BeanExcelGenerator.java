@@ -6,13 +6,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
 
 public class BeanExcelGenerator {
 	private HSSFWorkbook workBook;
@@ -21,16 +27,15 @@ public class BeanExcelGenerator {
 	private Map<String, Method[]> map;
 	private FileOutputStream out;
 	private int rowIndex = 0;
+	private Font fontBold;
+	private CellStyle styleFontBold;
 	
+
 	public BeanExcelGenerator(String path, Map<String, Method[]> map) {
-		this.file = new File(path);
+		this.path = Paths.get(path);
 		this.map = map;
-		try {
-			this.out = new FileOutputStream(path);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
 		this.workBook = new HSSFWorkbook();
+		setStyleFontBold();
 	}
 
 	public HSSFWorkbook getWorkBook() {
@@ -40,33 +45,60 @@ public class BeanExcelGenerator {
 	public File getFile() {
 		return this.file;
 	}
-	
-	public OutputStream getOut() {
+	public void setFile(File file) {
+		this.file = file;
+	}
+	private OutputStream getOut() {
 		return this.out;
 	}
-	public void save() {
-		
-		// file Èç¹û´æÔÚ¾ÍÓÃÐÞ¸Ä
-		if (getFile().exists()) {
-			writePresentExcel();
-		} else {
-			writeNewExcel();
-		}
+	public void setOut(FileOutputStream out) {
+		this.out = out;
+	}
+	
+
+
+
+	public CellStyle getStyleFontBold() {
+		return styleFontBold;
+	}
+
+	public void setStyleFontBold() {
+		CellStyle style = getWorkBook().createCellStyle();
+		Font font = getWorkBook().createFont();
+		font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		font.setFontHeightInPoints((short)12);
+		style.setFont(font);
+		this.styleFontBold = style;
+	}
+
+	private Path getPath() {
+		return this.path;
+	}
+	public void save() throws Exception {
+			if(Files.exists(getPath(), LinkOption.NOFOLLOW_LINKS)) {
+				writePresentExcel();
+			} else {
+				setFile(getPath().toFile());
+				setOut(new FileOutputStream(getFile()));
+				writeNewExcel();
+			}
 	}
 
 	private void writeNewExcel() {
-		//³õÊ¼»¯Excel±í¸ñÀ¸µÄ±êÌâ
 		initExcel();
+		
 		Iterator<String> keyIt = map.keySet().iterator();
 		while (keyIt.hasNext()) {
 			String key = keyIt.next();
 			Method[] m = map.get(key);
 			HSSFSheet sheet = getWorkBook().getSheet(file.getName());
-			//Ð´ÈëBeanÃû³Æ
-			sheet.createRow(rowIndex).createCell(0).setCellValue(key);
+			HSSFCell beanCell = sheet.createRow(rowIndex).createCell(0);
+			beanCell.setCellStyle(getStyleFontBold());
+			beanCell.setCellValue(key);
 			rowIndexIncrease();
 			for(int i = 0;i<m.length;i++) {
 				sheet.createRow(rowIndex).createCell(0).setCellValue(m[i].getName());
+				rowIndexIncrease();
 			}
 		}
 		try {
@@ -85,7 +117,7 @@ public class BeanExcelGenerator {
 	private void initExcel() {
 		int top = 0;
 		rowIndexIncrease();
-		String[] colNames = { "DWR½Ó¿ÚºÍ·½·¨Ãû" , "Íê³ÉÇé¿ö£¨»ÒÉ«ÎªºöÂÔ£©" , "¸ºÔðÈË" , "±¸×¢" }; 
+		String[] colNames = { "DWRæŽ¥å£å’Œæ–¹æ³•å" , "å®Œæˆæƒ…å†µï¼ˆç°è‰²ä¸ºå¿½ç•¥ï¼‰" , "è´Ÿè´£äºº" , "å¤‡æ³¨" }; 
 		HSSFSheet sheet = getWorkBook().createSheet(file.getName());
 		HSSFRow topRow = sheet.createRow(top);
 		for(int i= 0 ; i < colNames.length ; i++) {
@@ -95,4 +127,5 @@ public class BeanExcelGenerator {
 	private void rowIndexIncrease() {
 		rowIndex++;
 	}
+	
 }
