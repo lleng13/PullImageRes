@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -24,7 +24,7 @@ public class BeanExcelGenerator {
 	private HSSFWorkbook workBook;
 	private Path path;
 	private File file;
-	private Map<String, Method[]> map;
+	private Map<String, List<String>> map;
 	private FileOutputStream out;
 	private int rowIndex = 0;
 	private CellStyle styleFontBold;
@@ -32,7 +32,7 @@ public class BeanExcelGenerator {
 
 
 
-	public BeanExcelGenerator(String path, Map<String, Method[]> map) {
+	public BeanExcelGenerator(String path, Map<String, List<String>> map) {
 		this.path = Paths.get(path);
 		this.map = map;
 		this.workBook = new HSSFWorkbook();
@@ -104,18 +104,18 @@ public class BeanExcelGenerator {
 
 	private void writeNewExcel() {
 		initExcel();
-		
 		Iterator<String> keyIt = map.keySet().iterator();
 		while (keyIt.hasNext()) {
 			String key = keyIt.next();
-			Method[] m = map.get(key);
-			HSSFSheet sheet = getWorkBook().getSheet(file.getName());
+			List<String> list = map.get(key);
+			Iterator<String> listIt = list.iterator();
+			HSSFSheet sheet = getWorkBook().getSheet("default sheet");//default sheet name
 			HSSFCell beanCell = sheet.createRow(rowIndex).createCell(0);
 			beanCell.setCellStyle(getStyleFontBold());
 			beanCell.setCellValue(key);
 			rowIndexIncrease();
-			for(int i = 0;i<m.length;i++) {
-				sheet.createRow(rowIndex).createCell(0).setCellValue(m[i].getName());
+			while(listIt.hasNext()) {
+				sheet.createRow(rowIndex).createCell(0).setCellValue(listIt.next());
 				rowIndexIncrease();
 			}
 		}
@@ -137,7 +137,7 @@ public class BeanExcelGenerator {
 		int top = 0;
 		rowIndexIncrease();
 		String[] colNames = { "1" , "2 ", "2" , "3" }; 
-		HSSFSheet sheet = getWorkBook().createSheet(file.getName());
+		HSSFSheet sheet = getWorkBook().createSheet("default sheet");
 		HSSFRow topRow = sheet.createRow(top);
 		for(int i= 0 ; i < colNames.length ; i++) {
 			HSSFCell cell = topRow.createCell(i);

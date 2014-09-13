@@ -27,7 +27,7 @@ public class TestPoi {
 	    File file = new File("E:/test.xls");
 	    FileOutputStream out = new FileOutputStream(file);
 	    int top = 0;
-		String[] colNames = { "DWR接口和方法名" , "完成情况（灰色为忽略）" , "负责人" , "备注" };
+		String[] colNames = { "DWR鎺ュ彛鍜屾柟娉曞悕" , "瀹屾垚鎯呭喌锛堢伆鑹蹭负蹇界暐锛� , "璐熻矗浜� , "澶囨敞" };
 		HSSFSheet sheet = wb.createSheet(file.getName());
 		HSSFRow topRow = sheet.createRow(top);
 		for(int i= 0 ; i < colNames.length ; i++) {
@@ -47,9 +47,14 @@ public class TestPoi {
 		}
 		wb.write(out);
 		out.close();*/
-		BeanMethodsCollector bmc = new BeanMethodsCollector(".*Bean\\.java$", "E:/edu-mooc/src/main/java/");
-		BeanExcelGenerator beg = new BeanExcelGenerator("E:/爱慕课接口完成结果.xls",bmc.getBeanMethodsMap());
-		beg.save();
+		JavaScriptUsedBeanMethodsCollector jsCollector = new JavaScriptUsedBeanMethodsCollector(".*\\.js", "C:\\Git Projects\\");
+		if(jsCollector.hasBeanMethodsSettled()) {
+			BeanExcelGenerator beg = new BeanExcelGenerator("C:\\Git Projects\\test.xls",jsCollector.getBeanMethods());
+			beg.save();
+		}
+		
+		
+		
 		/*File file = new File("E:/test.xls");
 	    FileOutputStream out = new FileOutputStream(file);
 	    System.out.println(file.exists());*/

@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 public class JavaScriptUsedBeanMethodsCollector {
 	private Path path = null;
     private MyFileVisitor visitor = null; 
-    private Map<String, ArrayList<String>> beanNameMap = null;
+    private Map<String, List<String>> beanMethodsMap = null;
     private String regexUrl = "url:'.*?Bean\\..*?'"; //获取调用的URL
     
 	public JavaScriptUsedBeanMethodsCollector(String regex, String path) throws Throwable {
@@ -34,17 +34,24 @@ public class JavaScriptUsedBeanMethodsCollector {
 	public MyFileVisitor getVisitor() {
 		return visitor;
 	}
-	public void setBeanNameMap() throws Exception {
+	public boolean hasBeanMethodsSettled(){
 //		Map<String, ArrayList<String>> map = new HashMap<>();
-		beanNameMap = new HashMap<>();
+		beanMethodsMap = new HashMap<>();
 		for(Path filePath : getVisitor().getFileList()) {
-			FileInputStream in = new FileInputStream(filePath.toFile());
-			beanNameMap = splitIntoMap(filterUrl(in), beanNameMap);
+			FileInputStream in = null;
+			try {
+				in = new FileInputStream(filePath.toFile());
+				beanMethodsMap = splitIntoMap(filterUrl(in), beanMethodsMap);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
 		}
+		return true;
 	}
 	
-	public Map<String, ArrayList<String>> getBeanNameMap() {
-		return beanNameMap;
+	public Map<String, List<String>> getBeanMethods() {
+		return beanMethodsMap;
 	}
 	/**
 	 * 过滤出符合的url
@@ -83,7 +90,7 @@ public class JavaScriptUsedBeanMethodsCollector {
 		return lines;
 	}
 	
-	private Map<String, ArrayList<String>> splitIntoMap(List<String> urlList, Map<String, ArrayList<String>> map) {
+	private Map<String, List<String>> splitIntoMap(List<String> urlList, Map<String, List<String>> map) {
 		String regexBean = ".*Bean";
 		String beanName = null;
 		String beanMethod = null;
@@ -96,7 +103,7 @@ public class JavaScriptUsedBeanMethodsCollector {
 			beanName = mt.group();
 			beanMethod = url.substring(beanName.length()+1);
 			if(isBeanExists(beanName,map)) {
-				ArrayList<String> list = map.get(beanName);
+				List<String> list = map.get(beanName);
 				if(!isMethodExists(beanMethod, list)){
 					//向对应的bean list中添加方法
 					list.add(beanMethod);
@@ -110,14 +117,14 @@ public class JavaScriptUsedBeanMethodsCollector {
 		return map;
 	}
 	
-	private boolean isMethodExists(String method, ArrayList<String> list) {
+	private boolean isMethodExists(String method, List<String> list) {
 		if(list.contains(method)){
 			return true;
 		} else {
 			return false;
 		}
 	}
-	private boolean isBeanExists(String bean, Map<String, ArrayList<String>> map) {
+	private boolean isBeanExists(String bean, Map<String, List<String>> map) {
 		Set<String> set = map.keySet();
 		if(set.contains(bean)) {
 			return true;

@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,11 +26,11 @@ public class Test2 {
 		
 		  JavaScriptUsedBeanMethodsCollector js = new
 		  JavaScriptUsedBeanMethodsCollector(".*\\.js", "C:\\Git Projects\\");
-		  js.setBeanNameMap();
-		  Map<String, ArrayList<String>> map = js.getBeanNameMap(); 
+		  js.hasBeanMethodsSettled();
+		  Map<String, List<String>> map = js.getBeanMethods(); 
 		  Iterator<String> it = map.keySet().iterator();
 		  Iterator<String> it2 = null;
-		  ArrayList<String> list = null;
+		  List<String> list = null;
 		  String key = null;
 		  while(it.hasNext()) 
 		  { 
