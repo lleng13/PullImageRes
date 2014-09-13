@@ -136,7 +136,7 @@ public class BeanExcelGenerator {
 	private void initExcel() {
 		int top = 0;
 		rowIndexIncrease();
-		String[] colNames = { "DWR接口和方法名" , "完成情况（灰色为忽略）" , "负责人" , "备注" }; 
+		String[] colNames = { "1" , "2 ", "2" , "3" }; 
 		HSSFSheet sheet = getWorkBook().createSheet(file.getName());
 		HSSFRow topRow = sheet.createRow(top);
 		for(int i= 0 ; i < colNames.length ; i++) {

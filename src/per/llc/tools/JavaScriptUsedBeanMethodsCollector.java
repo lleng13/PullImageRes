@@ -3,6 +3,7 @@ package per.llc.tools;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,7 +24,7 @@ public class JavaScriptUsedBeanMethodsCollector {
 	private Path path = null;
     private MyFileVisitor visitor = null; 
     private Map<String, ArrayList<String>> beanNameMap = null;
-    private String regexUrl = "url:'.*Bean\\..*'"; //获取调用的URL
+    private String regexUrl = "url:'.*?Bean\\..*?'"; //获取调用的URL
     
 	public JavaScriptUsedBeanMethodsCollector(String regex, String path) throws Throwable {
 		this.path = Paths.get(path);    
@@ -42,6 +43,9 @@ public class JavaScriptUsedBeanMethodsCollector {
 		}
 	}
 	
+	public Map<String, ArrayList<String>> getBeanNameMap() {
+		return beanNameMap;
+	}
 	/**
 	 * 过滤出符合的url
 	 * @param in
@@ -51,18 +55,13 @@ public class JavaScriptUsedBeanMethodsCollector {
 	public List<String> filterUrl(InputStream in) throws Exception {
 		List<String> groups = new ArrayList<>();
 		BufferedReader br = new BufferedReader(new InputStreamReader(in));
-		int lines = countLines(in);
 		String str = null;
-		for(int i=0;i<lines;i++) {
-			str = br.readLine();
+		//按行读入文件
+		while((str=br.readLine())!=null){
 			Pattern pt = Pattern.compile(regexUrl);
 			Matcher mt = pt.matcher(str);
-			if(mt.find()) {
-				int count = mt.groupCount();
-				for(int j=0;j<count;j++) {
-					//去掉url:'前缀
-					groups.add(mt.group(j).substring("url:".length()));
-				}
+			while(mt.find()) {
+					groups.add(mt.group().substring("url:'".length(),mt.group().length()-1));
 			}
 		}
 		br.close();
@@ -76,9 +75,11 @@ public class JavaScriptUsedBeanMethodsCollector {
 	 * @throws Exception
 	 */
 	public int countLines(InputStream in) throws Exception {
-		LineNumberReader lnr = new LineNumberReader(new InputStreamReader(in));
-		int lines = lnr.getLineNumber();
-		lnr.close();
+		BufferedReader br = new BufferedReader(new InputStreamReader(in));
+		int lines = 0;
+		while(br.readLine()!=null) {
+			lines++;
+		}
 		return lines;
 	}
 	
@@ -89,13 +90,17 @@ public class JavaScriptUsedBeanMethodsCollector {
 		Iterator<String> urlIt = urlList.iterator();
 		while(urlIt.hasNext()) {
 			Pattern pt = Pattern.compile(regexBean);
-			Matcher mt = pt.matcher(urlIt.next());
-			beanName = mt.group(0);
-			beanMethod = mt.group(0).substring(beanName.length()+1);
+			String url = urlIt.next();
+			Matcher mt = pt.matcher(url);
+			mt.find();
+			beanName = mt.group();
+			beanMethod = url.substring(beanName.length()+1);
 			if(isBeanExists(beanName,map)) {
 				ArrayList<String> list = map.get(beanName);
-				//向对应的bean list中添加方法
-				list.add(beanMethod);
+				if(!isMethodExists(beanMethod, list)){
+					//向对应的bean list中添加方法
+					list.add(beanMethod);
+				}
 			} else {
 				ArrayList<String> list = new ArrayList<>();
 				list.add(beanMethod);
@@ -105,6 +110,13 @@ public class JavaScriptUsedBeanMethodsCollector {
 		return map;
 	}
 	
+	private boolean isMethodExists(String method, ArrayList<String> list) {
+		if(list.contains(method)){
+			return true;
+		} else {
+			return false;
+		}
+	}
 	private boolean isBeanExists(String bean, Map<String, ArrayList<String>> map) {
 		Set<String> set = map.keySet();
 		if(set.contains(bean)) {
