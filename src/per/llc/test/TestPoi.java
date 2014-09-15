@@ -1,14 +1,7 @@
-package per.llc.tools;
+package per.llc.test;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.util.Iterator;
-
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import per.llc.tools.BeanExcelGenerator;
+import per.llc.tools.JavaScriptUsedBeanMethodsCollector;
 
 
 public class TestPoi {
@@ -27,7 +20,7 @@ public class TestPoi {
 	    File file = new File("E:/test.xls");
 	    FileOutputStream out = new FileOutputStream(file);
 	    int top = 0;
-		String[] colNames = { "DWR鎺ュ彛鍜屾柟娉曞悕" , "瀹屾垚鎯呭喌锛堢伆鑹蹭负蹇界暐锛� , "璐熻矗浜� , "澶囨敞" };
+		String[] colNames = { "DWR閹恒儱褰涢崪灞炬煙濞夋洖鎮�" , "鐎瑰本鍨氶幆鍛枌閿涘牏浼嗛懝韫礋韫囩晫鏆愰敍锟� , "鐠愮喕鐭楁禍锟� , "婢跺洦鏁�" };
 		HSSFSheet sheet = wb.createSheet(file.getName());
 		HSSFRow topRow = sheet.createRow(top);
 		for(int i= 0 ; i < colNames.length ; i++) {
@@ -47,9 +40,9 @@ public class TestPoi {
 		}
 		wb.write(out);
 		out.close();*/
-		JavaScriptUsedBeanMethodsCollector jsCollector = new JavaScriptUsedBeanMethodsCollector(".*\\.js", "C:\\Git Projects\\");
+		JavaScriptUsedBeanMethodsCollector jsCollector = new JavaScriptUsedBeanMethodsCollector(".*\\.js", "E:\\edu-mooc\\");
 		if(jsCollector.hasBeanMethodsSettled()) {
-			BeanExcelGenerator beg = new BeanExcelGenerator("C:\\Git Projects\\test.xls",jsCollector.getBeanMethods());
+			BeanExcelGenerator beg = new BeanExcelGenerator("E:\\爱课程接口完成情况.xls",jsCollector.getBeanMethods());
 			beg.save();
 		}
 		
