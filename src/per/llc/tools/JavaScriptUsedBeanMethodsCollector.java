@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 public class JavaScriptUsedBeanMethodsCollector {
 	private Path path = null;
     private MyFileVisitor visitor = null; 
-    private Map<String, List<String>> beanMethodsMap = null;
+    private Map<String, ArrayList<String>> beanMethodsMap = null;
     private String regexUrl = "url:'.*?Bean\\..*?'"; //获取调用的URL
     
 	public JavaScriptUsedBeanMethodsCollector(String regex, String path) throws Throwable {
@@ -48,7 +48,7 @@ public class JavaScriptUsedBeanMethodsCollector {
 		return true;
 	}
 	
-	public Map<String, List<String>> getBeanMethods() {
+	public Map<String, ArrayList<String>> getBeanMethods() {
 		return beanMethodsMap;
 	}
 	/**
@@ -88,7 +88,7 @@ public class JavaScriptUsedBeanMethodsCollector {
 		return lines;
 	}
 	
-	private Map<String, List<String>> splitIntoMap(List<String> urlList, Map<String, List<String>> map) {
+	private Map<String, ArrayList<String>> splitIntoMap(List<String> urlList, Map<String, ArrayList<String>> map) {
 		String regexBean = ".*Bean";
 		String beanName = null;
 		String beanMethod = null;
@@ -122,8 +122,8 @@ public class JavaScriptUsedBeanMethodsCollector {
 			return false;
 		}
 	}
-	public boolean isBeanExists(String bean, Map<String, List<String>> map) {
-		Set<String> set = map.keySet();
+	public boolean isBeanExists(String bean, Map<String, ArrayList<String>> xlsMap) {
+		Set<String> set = xlsMap.keySet();
 		if(set.contains(bean)) {
 			return true;
 		} else {

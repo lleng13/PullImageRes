@@ -167,11 +167,12 @@ public class BeanExcelGenerator {
 		JavaScriptUsedBeanMethodsCollector jsc = new JavaScriptUsedBeanMethodsCollector();
 		String method = null;
 		rowIndexIncrease();
+		Map<String, ArrayList<String>> xlsMap = readExcel();
 		HSSFSheet sheet = getWorkBook().getSheet(DEFAULT_SHEET);
 		HSSFRow row = sheet.getRow(rowIndex);
 		String beanName = row.getCell(0).getStringCellValue();
 		List<String> methods = nextSingleBeanMethodNames();
-		if(jsc.isBeanExists(beanName, this.map)) {
+		if(jsc.isBeanExists(beanName, xlsMap)) {
 			Iterator<String> it = methods.iterator();
 			while(it.hasNext()) {
 				if(jsc.isMethodExists(method = it.next(), this.map.get(beanName))) {

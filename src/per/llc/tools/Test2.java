@@ -27,7 +27,7 @@ public class Test2 {
 		  JavaScriptUsedBeanMethodsCollector js = new
 		  JavaScriptUsedBeanMethodsCollector(".*\\.js", "C:\\Git Projects\\");
 		  js.hasBeanMethodsSettled();
-		  Map<String, List<String>> map = js.getBeanMethods(); 
+		  Map<String, ArrayList<String>> map = js.getBeanMethods(); 
 		  Iterator<String> it = map.keySet().iterator();
 		  Iterator<String> it2 = null;
 		  List<String> list = null;
