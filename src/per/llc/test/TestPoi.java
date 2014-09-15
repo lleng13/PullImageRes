@@ -40,6 +40,7 @@ public class TestPoi {
 		}
 		wb.write(out);
 		out.close();*/
+		
 		JavaScriptUsedBeanMethodsCollector jsCollector = new JavaScriptUsedBeanMethodsCollector(".*\\.js", "E:\\edu-mooc\\");
 		if(jsCollector.hasBeanMethodsSettled()) {
 			BeanExcelGenerator beg = new BeanExcelGenerator("E:\\爱课程接口完成情况.xls",jsCollector.getBeanMethods());

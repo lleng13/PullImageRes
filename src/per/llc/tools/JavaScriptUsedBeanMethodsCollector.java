@@ -27,6 +27,8 @@ public class JavaScriptUsedBeanMethodsCollector {
     	this.visitor = new MyFileVisitor(regex);
 		Files.walkFileTree(this.path, visitor);
 	}
+	public JavaScriptUsedBeanMethodsCollector() {
+	}
 	public MyFileVisitor getVisitor() {
 		return visitor;
 	}
@@ -113,14 +115,14 @@ public class JavaScriptUsedBeanMethodsCollector {
 		return map;
 	}
 	
-	private boolean isMethodExists(String method, List<String> list) {
+	public boolean isMethodExists(String method, List<String> list) {
 		if(list.contains(method)){
 			return true;
 		} else {
 			return false;
 		}
 	}
-	private boolean isBeanExists(String bean, Map<String, List<String>> map) {
+	public boolean isBeanExists(String bean, Map<String, List<String>> map) {
 		Set<String> set = map.keySet();
 		if(set.contains(bean)) {
 			return true;
