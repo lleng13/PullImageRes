@@ -95,6 +95,7 @@ public class BeanExcelGenerator {
 	private Path getPath() {
 		return this.path;
 	}
+	//±£´æexcel
 	public void save() throws Exception {
 			if(Files.exists(getPath(), LinkOption.NOFOLLOW_LINKS)) {
 				writePresentExcel();

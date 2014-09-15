@@ -1,5 +1,13 @@
 package per.llc.test;
 
+import java.io.FileInputStream;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
 import per.llc.tools.BeanExcelGenerator;
 import per.llc.tools.JavaScriptUsedBeanMethodsCollector;
 
@@ -41,13 +49,16 @@ public class TestPoi {
 		wb.write(out);
 		out.close();*/
 		
-		JavaScriptUsedBeanMethodsCollector jsCollector = new JavaScriptUsedBeanMethodsCollector(".*\\.js", "E:\\edu-mooc\\");
+	/*	JavaScriptUsedBeanMethodsCollector jsCollector = new JavaScriptUsedBeanMethodsCollector(".*\\.js", "E:\\edu-mooc\\");
 		if(jsCollector.hasBeanMethodsSettled()) {
 			BeanExcelGenerator beg = new BeanExcelGenerator("E:\\爱课程接口完成情况.xls",jsCollector.getBeanMethods());
 			beg.save();
-		}
-		
-		
+		}*/
+		HSSFWorkbook wb = new HSSFWorkbook();
+		FileInputStream in = new FileInputStream("E:\\爱课程接口完成情况.xls");
+		HSSFWorkbook workbook = new HSSFWorkbook(in);
+		HSSFSheet sheet = workbook.getSheetAt(0);
+		System.out.println(sheet.getLastRowNum());
 		
 		/*File file = new File("E:/test.xls");
 	    FileOutputStream out = new FileOutputStream(file);
