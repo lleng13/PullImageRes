@@ -24,18 +24,26 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 
+import per.llc.bean.Method;
+
 public class BeanExcelGenerator {
 	private HSSFWorkbook workBook;
 	private Path path;
 	private File file;
-	private Map<String, List<String>> map;
+	private Map<String, Method> map;
 	private FileOutputStream out;
 	private int rowIndex = 0;
 	private CellStyle styleFontBold;
 	private CellStyle styleFontColName;
 	private final String DEFAULT_SHEET = "defautl sheet";
 	
-	public BeanExcelGenerator(String path, Map<String, List<String>> map) {
+	/*public BeanExcelGenerator(String path, Map<String, ArrayList<String>> map) {
+		this.path = Paths.get(path);
+		this.map = map;
+		this.workBook = new HSSFWorkbook();
+		initStyles();
+	}*/
+	public BeanExcelGenerator(String path, Map<String, Method> map) {
 		this.path = Paths.get(path);
 		this.map = map;
 		this.workBook = new HSSFWorkbook();

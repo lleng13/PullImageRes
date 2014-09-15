@@ -1,4 +1,4 @@
-package per.llc.tools;
+package per.llc.test;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import per.llc.tools.JavaScriptUsedBeanMethodsCollector;
 
 public class Test2 {
 	public static void main(String[] args) throws Throwable {

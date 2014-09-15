@@ -16,6 +16,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import per.llc.bean.Method;
+
 public class JavaScriptUsedBeanMethodsCollector {
 	private Path path = null;
     private MyFileVisitor visitor = null; 
@@ -51,6 +53,26 @@ public class JavaScriptUsedBeanMethodsCollector {
 	public Map<String, ArrayList<String>> getBeanMethods() {
 		return beanMethodsMap;
 	}
+	/**
+	 * get a detailed bean method map
+	 * @return
+	 *          Map<String, Method>
+	 */
+	public Map<String, Method> getVerboseMap() {
+		Map<String, Method> vMap = new HashMap<String, Method>();
+		Method m = null;
+		Iterator<String> keyIt = getBeanMethods().keySet().iterator();
+		while(keyIt.hasNext()) {
+			String key = keyIt.next();
+			Iterator<String> methodIt = getBeanMethods().get(key).iterator();
+			while(methodIt.hasNext()) {
+				m = new Method(key,methodIt.next());
+			}
+			vMap.put(key, m);
+		}
+		return vMap;
+	}
+	
 	/**
 	 * 过滤出符合的url
 	 * @param in
