@@ -1,4 +1,4 @@
-package per.llc.tools;
+package per.llc.tools.bean;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,20 +30,15 @@ public class BeanExcelGenerator {
 	private HSSFWorkbook workBook;
 	private Path path;
 	private File file;
-	private Map<String, Method> map;
+	private Map<String, ArrayList<String>> map;
 	private FileOutputStream out;
 	private int rowIndex = 0;
 	private CellStyle styleFontBold;
 	private CellStyle styleFontColName;
+	private CellStyle styleFontGrey;
 	private final String DEFAULT_SHEET = "defautl sheet";
 	
-	/*public BeanExcelGenerator(String path, Map<String, ArrayList<String>> map) {
-		this.path = Paths.get(path);
-		this.map = map;
-		this.workBook = new HSSFWorkbook();
-		initStyles();
-	}*/
-	public BeanExcelGenerator(String path, Map<String, Method> map) {
+	public BeanExcelGenerator(String path, Map<String, ArrayList<String>> map) {
 		this.path = Paths.get(path);
 		this.map = map;
 		this.workBook = new HSSFWorkbook();

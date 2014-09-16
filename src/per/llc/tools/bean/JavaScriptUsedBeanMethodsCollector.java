@@ -1,4 +1,4 @@
-package per.llc.tools;
+package per.llc.tools.bean;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import per.llc.bean.Method;
+import per.llc.tools.file.MyFileVisitor;
 
 public class JavaScriptUsedBeanMethodsCollector {
 	private Path path = null;
@@ -58,17 +59,20 @@ public class JavaScriptUsedBeanMethodsCollector {
 	 * @return
 	 *          Map<String, Method>
 	 */
-	public Map<String, Method> getVerboseMap() {
-		Map<String, Method> vMap = new HashMap<String, Method>();
+	public Map<String, ArrayList<Method>> getVerboseMap() {
+		Map<String, ArrayList<Method>> vMap = new HashMap<String, ArrayList<Method>>();
+		ArrayList<Method> mlist = null; 
 		Method m = null;
 		Iterator<String> keyIt = getBeanMethods().keySet().iterator();
 		while(keyIt.hasNext()) {
 			String key = keyIt.next();
 			Iterator<String> methodIt = getBeanMethods().get(key).iterator();
+			mlist = new ArrayList<>();
 			while(methodIt.hasNext()) {
 				m = new Method(key,methodIt.next());
+				mlist.add(m);
 			}
-			vMap.put(key, m);
+			vMap.put(key, mlist);
 		}
 		return vMap;
 	}

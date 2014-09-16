@@ -2,12 +2,14 @@ package per.llc.bean;
 
 public class Method {
 	//default values
-	private String bean;
-	private String method;
-	private boolean valid = false;
+	private String bean = "null";
+	private String method = "null";
+	private boolean valid = true;
 	private String maintainer = "undistributed";
 	private String memo = "null";
-	
+	public static final String[] DES = {
+		"接口名称", "方法名称" , "完成情况（灰色为忽略）" , "负责人" , "备注"
+	};
 	public Method(String bean, String method) {
 		this.bean = bean;
 		this.method = method;

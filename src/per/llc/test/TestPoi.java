@@ -8,8 +8,9 @@ import java.nio.file.Path;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-import per.llc.tools.BeanExcelGenerator;
-import per.llc.tools.JavaScriptUsedBeanMethodsCollector;
+import per.llc.tools.bean.BeanExcelGenerator;
+import per.llc.tools.bean.BeanExcelGenerator2;
+import per.llc.tools.bean.JavaScriptUsedBeanMethodsCollector;
 
 
 public class TestPoi {
@@ -28,7 +29,7 @@ public class TestPoi {
 	    File file = new File("E:/test.xls");
 	    FileOutputStream out = new FileOutputStream(file);
 	    int top = 0;
-		String[] colNames = { "DWR閹恒儱褰涢崪灞炬煙濞夋洖鎮�" , "鐎瑰本鍨氶幆鍛枌閿涘牏浼嗛懝韫礋韫囩晫鏆愰敍锟� , "鐠愮喕鐭楁禍锟� , "婢跺洦鏁�" };
+		String[] colNames = { "DWR闁规亽鍎辫ぐ娑㈠椽鐏炵偓鐓欐繛澶嬫礀閹拷" , "閻庣懓鏈崹姘跺箚閸涱厼鏋岄柨娑樼墢娴煎棝鎳濋煫顓＄闊洨鏅弳鎰版晬閿燂拷 , "閻犳劗鍠曢惌妤佺閿燂拷 , "濠㈣泛娲﹂弫锟�" };
 		HSSFSheet sheet = wb.createSheet(file.getName());
 		HSSFRow topRow = sheet.createRow(top);
 		for(int i= 0 ; i < colNames.length ; i++) {
@@ -49,16 +50,16 @@ public class TestPoi {
 		wb.write(out);
 		out.close();*/
 		
-	/*	JavaScriptUsedBeanMethodsCollector jsCollector = new JavaScriptUsedBeanMethodsCollector(".*\\.js", "E:\\edu-mooc\\");
+		JavaScriptUsedBeanMethodsCollector jsCollector = new JavaScriptUsedBeanMethodsCollector(".*\\.js", "E:\\edu-mooc\\");
 		if(jsCollector.hasBeanMethodsSettled()) {
-			BeanExcelGenerator beg = new BeanExcelGenerator("E:\\爱课程接口完成情况.xls",jsCollector.getBeanMethods());
+			BeanExcelGenerator2 beg = new BeanExcelGenerator2("E:\\爱课程接口完成情况.xls",jsCollector.getVerboseMap());
 			beg.save();
-		}*/
-		HSSFWorkbook wb = new HSSFWorkbook();
-		FileInputStream in = new FileInputStream("E:\\爱课程接口完成情况.xls");
+		}
+	/*	HSSFWorkbook wb = new HSSFWorkbook();
+		FileInputStream in = new FileInputStream("E:\\鐖辫绋嬫帴鍙ｅ畬鎴愭儏鍐�.xls");
 		HSSFWorkbook workbook = new HSSFWorkbook(in);
 		HSSFSheet sheet = workbook.getSheetAt(0);
-		System.out.println(sheet.getLastRowNum());
+		System.out.println(sheet.getLastRowNum());*/
 		
 		/*File file = new File("E:/test.xls");
 	    FileOutputStream out = new FileOutputStream(file);
