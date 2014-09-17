@@ -40,8 +40,8 @@ public class BeanExcelGenerator {
 	private int writeRowNum;
 	private ExcelStyle es;
 	
-	public BeanExcelGenerator(String path, Map<String, ArrayList<Method>> map) {
-		this.path = Paths.get(path);
+	public BeanExcelGenerator(Map<String, ArrayList<Method>> map) {
+		
 		this.map = map;
 		this.workBook = new HSSFWorkbook();   
 	}
@@ -85,7 +85,8 @@ public class BeanExcelGenerator {
 	 * save the target excel file in to given path
 	 * @throws Exception
 	 */
-	public void save() throws Exception {
+	public void save(String path) throws Exception {
+			this.path = Paths.get(path);
 			if(Files.exists(getPath(), LinkOption.NOFOLLOW_LINKS)) {
 				setReaderWorkBook();//before write
 				writePresentExcel();
