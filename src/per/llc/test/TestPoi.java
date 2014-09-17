@@ -9,7 +9,6 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import per.llc.tools.bean.BeanExcelGenerator;
-import per.llc.tools.bean.BeanExcelGenerator2;
 import per.llc.tools.bean.JavaScriptUsedBeanMethodsCollector;
 
 
@@ -52,7 +51,7 @@ public class TestPoi {
 		
 		JavaScriptUsedBeanMethodsCollector jsCollector = new JavaScriptUsedBeanMethodsCollector(".*\\.js", "E:\\edu-mooc\\");
 		if(jsCollector.hasBeanMethodsSettled()) {
-			BeanExcelGenerator2 beg = new BeanExcelGenerator2("E:\\爱课程接口完成情况.xls",jsCollector.getVerboseMap());
+			BeanExcelGenerator beg = new BeanExcelGenerator("E:\\爱课程接口完成情况.xls",jsCollector.getVerboseMap());
 			beg.save();
 		}
 	/*	HSSFWorkbook wb = new HSSFWorkbook();

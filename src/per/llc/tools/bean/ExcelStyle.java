@@ -1,5 +1,6 @@
 package per.llc.tools.bean;
 
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -41,5 +42,4 @@ public class ExcelStyle {
 		style.setFont(font);
 		return style;
 	}
-	
 }
