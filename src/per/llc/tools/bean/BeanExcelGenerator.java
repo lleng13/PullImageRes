@@ -11,7 +11,7 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -20,9 +20,9 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 
 import per.llc.bean.Method;
+import per.llc.bean.MethodStatus;
 
 public class BeanExcelGenerator {
 	private HSSFWorkbook workBook;
@@ -31,7 +31,11 @@ public class BeanExcelGenerator {
 	private Map<String, ArrayList<Method>> map;
 	private FileOutputStream out;
 	private int rowIndex = 0;
-	private final String DEFAULT_SHEET = "defautl sheet";
+	private String DEFAULT_SHEET = "defautl sheet";
+	
+
+	private final long TIMESTAMP = System.currentTimeMillis();
+	private final String NEW_SHEET = String.valueOf(TIMESTAMP);
 	private int readRowNum;
 	private int writeRowNum;
 	private ExcelStyle es;
@@ -39,9 +43,11 @@ public class BeanExcelGenerator {
 	public BeanExcelGenerator(String path, Map<String, ArrayList<Method>> map) {
 		this.path = Paths.get(path);
 		this.map = map;
-		this.workBook = new HSSFWorkbook();
+		this.workBook = new HSSFWorkbook();   
 	}
-	
+	public void setDefaultSheet(String defautSheet) {
+		this.DEFAULT_SHEET = defautSheet;
+	}
 	public HSSFWorkbook getWorkBook() {
 		return this.workBook;
 	}
@@ -50,6 +56,7 @@ public class BeanExcelGenerator {
 		try {
 			HSSFWorkbook workbook = new HSSFWorkbook(new FileInputStream(getPath().toFile()));
 			this.workBook = workbook;
+			setDefaultSheet(this.workBook.getSheetAt(0).getSheetName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -136,18 +143,28 @@ public class BeanExcelGenerator {
 		while(mIt.hasNext()) {
 			row = sheet.createRow(sheet.getLastRowNum()+1);
 			m = mIt.next();
-			row.createCell(0).setCellValue(m.getBean());
-			row.createCell(1).setCellValue(m.getMethod());
-			row.createCell(2).setCellValue(m.isValid());
-			row.createCell(3).setCellValue(m.getMaintainer());
-			row.createCell(4).setCellValue(m.getMemo());
+			writeCell(row, m);
 		}
+	}
+	/**
+	 * write row cells
+	 * @param row
+	 * @param method
+	 */
+	private void writeCell(HSSFRow row, Method method) {
+		row.createCell(0).setCellValue(method.getBean());
+		row.createCell(1).setCellValue(method.getMethod());
+		row.createCell(2).setCellValue(method.getSchedule());
+		row.createCell(3).setCellValue(method.isValid());
+		row.createCell(4).setCellValue(method.getMaintainer());
+		row.createCell(5).setCellValue(method.getMemo());
+		row.createCell(6).setCellValue(method.getStatus());
 	}
 	
 	private void initExcel(String[] colNames) {
 		int top = 0;
-		rowIndex++;
-		HSSFSheet sheet = getWorkBook().createSheet(DEFAULT_SHEET);
+		HSSFSheet sheet = getWorkBook().createSheet(NEW_SHEET);
+		setDefaultSheet(NEW_SHEET);
 		HSSFRow topRow = sheet.createRow(top);
 		for(int i= 0 ; i < colNames.length ; i++) {
 			HSSFCell cell = topRow.createCell(i);
@@ -158,21 +175,17 @@ public class BeanExcelGenerator {
 	}
 	private void writePresentExcel() {
 		rowIndex = 1;
-		ArrayList<Method> mlist = readExcel();
+		ArrayList<Method> mlist = readExcel();//read
+		initExcel(Method.DES);//initialize sheet
 		ArrayList<Method> resultList = getResultList(mlist, this.map);
-		//TO-DO
-		//sort method bean name -- resultList  
+		Collections.sort(resultList);
 		Iterator<Method> it = resultList.iterator();
 		Method m = null;
 		HSSFSheet sheet = getWorkBook().getSheet(DEFAULT_SHEET);
 		for(;it.hasNext();rowIndex++) {
 			HSSFRow row = sheet.createRow(rowIndex);
 			m = it.next();
-			row.createCell(0).setCellValue(m.getBean());
-			row.createCell(1).setCellValue(m.getMethod());
-			row.createCell(2).setCellValue(m.isValid());
-			row.createCell(3).setCellValue(m.getMaintainer());
-			row.createCell(4).setCellValue(m.getMemo());	
+			writeCell(row, m);
 			Iterator<Cell> cellIt = row.cellIterator();
 			if(!m.isValid()) {
 				while(cellIt.hasNext()) {
@@ -197,9 +210,9 @@ public class BeanExcelGenerator {
 			m = mIt.next();
 			if(!checkBean(m.getBean(), map)) {
 				m.setValidity(false);
-			} else {
+			} /*else {
 				m.setValidity(true);
-			}
+			}*/
 			
 		}
 		return mlist;
@@ -215,25 +228,41 @@ public class BeanExcelGenerator {
 			ArrayList<Method> slist) {
 		Iterator<Method> rIt = rlist.iterator();
 		Iterator<Method> sIt = slist.iterator();
+		ArrayList<Method> templist = null;
 		Method m = null;
 		if(containBean(beanName, rlist)) {
 			while(sIt.hasNext()) {
 				m = sIt.next();
+				templist = new ArrayList<>();
 				if(!containMethod(m, rlist)) {
-					rlist.add(m);
+					m.setStatus(MethodStatus.NEW);
+					templist.add(m);
+					//rlist.add(m);
 				} 
 			}
 			while(rIt.hasNext()) {
-				m = rIt.next();
+				
+				try{
+					m = rIt.next();
+				} catch(Exception e) {
+					System.out.println(m);
+					e.printStackTrace();
+				}
 				if(m.getBean().equals(beanName)) {
 					if(!containMethod(m, slist)) {
 						m.setValidity(false);
+						m.setStatus(MethodStatus.CHANGED);
 					}
-				} else {
+				} /*else {
 					m.setValidity(true);
-				}
+				}*/
 			}
+			rlist.addAll(templist);
 		} else {
+			while(sIt.hasNext()) {
+				m = sIt.next();
+				m.setStatus(MethodStatus.NEW);
+			}
 			rlist.addAll(slist); //add scanned list into read list
 		}
 		return rlist;
@@ -275,11 +304,12 @@ public class BeanExcelGenerator {
 				readRowNum = i;
 				return mlist;
 			}
-				
 			m = new Method(row.getCell(0).getStringCellValue(),row.getCell(1).getStringCellValue());
-			m.setValidity(row.getCell(2).getBooleanCellValue());
-			m.setMaintainer(row.getCell(3).getStringCellValue());
-			m.setMemo(row.getCell(4).getStringCellValue());
+			m.setSchedule(row.getCell(2).getStringCellValue());
+			m.setValidity(row.getCell(3).getBooleanCellValue());
+			m.setMaintainer(row.getCell(4).getStringCellValue());
+			m.setMemo(row.getCell(5).getStringCellValue());
+			m.setStatus(MethodStatus.OLD);
 			mlist.add(m);
 		}
 		return mlist;

@@ -19,18 +19,20 @@ import java.util.regex.Pattern;
 import per.llc.bean.Method;
 import per.llc.tools.file.MyFileVisitor;
 
-public class JavaScriptUsedBeanMethodsCollector {
+public class BeanMethodsCollector {
 	private Path path = null;
     private MyFileVisitor visitor = null; 
     private Map<String, ArrayList<String>> beanMethodsMap = null;
-    private String regexUrl = "url:'.*?Bean\\..*?'"; //获取调用的URL
-    
-	public JavaScriptUsedBeanMethodsCollector(String regex, String path) throws Throwable {
+//	private String regexUrl = "url:'.*?Bean?\\..*?'|url : '.*?Bean?\\..*?'"
+//			+ "|url: '.*?Bean?\\..*?'|url:' .*?Bean?\\..*?'"; // 获取调用的URL
+	private String regexUrl = "(url:'.+?(Bean)\\..+?')|(url : '.+?(Bean)\\..+?')|"
+			+ "(url: '.+?(Bean)\\..+?')|(url :'.+?(Bean)\\..+?')"; // 获取调用的URL
+	public BeanMethodsCollector(String regex, String path) throws Throwable {
 		this.path = Paths.get(path);    
     	this.visitor = new MyFileVisitor(regex);
 		Files.walkFileTree(this.path, visitor);
 	}
-	public JavaScriptUsedBeanMethodsCollector() {
+	public BeanMethodsCollector() {
 	}
 	public MyFileVisitor getVisitor() {
 		return visitor;
@@ -92,7 +94,12 @@ public class JavaScriptUsedBeanMethodsCollector {
 			Pattern pt = Pattern.compile(regexUrl);
 			Matcher mt = pt.matcher(str);
 			while(mt.find()) {
-					groups.add(mt.group().substring("url:'".length(),mt.group().length()-1));
+				String mtStr = mt.group();
+				Pattern trimPt = Pattern.compile(".*?'");
+				Matcher trimMt = trimPt.matcher(mtStr);
+				if(trimMt.find()) {
+					groups.add(mtStr.substring(trimMt.group().length(), mtStr.length()-1));
+				}
 			}
 		}
 		br.close();
@@ -115,7 +122,7 @@ public class JavaScriptUsedBeanMethodsCollector {
 	}
 	
 	private Map<String, ArrayList<String>> splitIntoMap(List<String> urlList, Map<String, ArrayList<String>> map) {
-		String regexBean = ".*Bean";
+		String regexBean = ".*?(Bean)";
 		String beanName = null;
 		String beanMethod = null;
 		Iterator<String> urlIt = urlList.iterator();

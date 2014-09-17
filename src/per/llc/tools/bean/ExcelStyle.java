@@ -38,7 +38,7 @@ public class ExcelStyle {
 	private CellStyle setStyleInvalid() {
 		CellStyle style = this.workbook.createCellStyle();
 		Font font = this.workbook.createFont();
-		font.setColor(HSSFColor.GREY_40_PERCENT.index);
+		font.setColor(HSSFColor.GREY_25_PERCENT.index);
 		style.setFont(font);
 		return style;
 	}

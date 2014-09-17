@@ -1,15 +1,20 @@
 package per.llc.test;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import per.llc.tools.bean.BeanExcelGenerator;
-import per.llc.tools.bean.JavaScriptUsedBeanMethodsCollector;
+import per.llc.tools.bean.BeanMethodsCollector;
 
 
 public class TestPoi {
@@ -49,9 +54,9 @@ public class TestPoi {
 		wb.write(out);
 		out.close();*/
 		
-		JavaScriptUsedBeanMethodsCollector jsCollector = new JavaScriptUsedBeanMethodsCollector(".*\\.js", "E:\\edu-mooc\\");
-		if(jsCollector.hasBeanMethodsSettled()) {
-			BeanExcelGenerator beg = new BeanExcelGenerator("E:\\爱课程接口完成情况.xls",jsCollector.getVerboseMap());
+		BeanMethodsCollector collector = new BeanMethodsCollector(".*\\.js|.*\\.ftl", "E:\\edu-mooc\\");
+		if(collector.hasBeanMethodsSettled()) {
+			BeanExcelGenerator beg = new BeanExcelGenerator("E:\\爱课程接口完成情况.xls",collector.getVerboseMap());
 			beg.save();
 		}
 	/*	HSSFWorkbook wb = new HSSFWorkbook();
@@ -60,8 +65,23 @@ public class TestPoi {
 		HSSFSheet sheet = workbook.getSheetAt(0);
 		System.out.println(sheet.getLastRowNum());*/
 		
-		/*File file = new File("E:/test.xls");
-	    FileOutputStream out = new FileOutputStream(file);
-	    System.out.println(file.exists());*/
+	    /*FileInputStream in = new FileInputStream("E:\\edu-mooc\\src\\main\\webapp\\template\\backend\\course\\category.ftl");
+	    BufferedReader br = new BufferedReader(new InputStreamReader(in));
+	    String str = null;
+	    while((str=br.readLine())!=null){
+	    	System.out.println(str);
+	    }*/
+	/*	String str = "2222222222222222222url : 'MemcacheAdminBean.deleteCacheBeanByName'222222222";
+		String regex ="(url:'.+?(Bean)\\..+?')|(url : '.+?(Bean)\\..+?')|(url: '.+?(Bean)\\..+?')|(url :'.+?(Bean)\\..+?')";
+		Pattern pt = Pattern.compile(regex);
+		Matcher mt = pt.matcher(str);
+		while(mt.find()) {
+			String mtStr = mt.group();
+			Pattern trimPt = Pattern.compile(".*?'");
+			Matcher trimMt = trimPt.matcher(mtStr);
+			if(trimMt.find()) {
+				System.out.println(mt.group().substring(trimMt.group().length(), mt.group().length()-1));
+		}
+		}	*/
 	}
 }
